@@ -1,25 +1,35 @@
+const { v4: uuidv4 } = require("uuid");
+
 const AppError = require("../utils/appError");
+
 let persons = global.db;
 
 exports.getPersons = async (req, res, next) => {
+  try {
+    if (persons) {
+      return res.status(200).json(persons);
+    }
+    return next(new AppError("Invalid data", 400));
+  } catch (error) {
+    console.error(error);
+
+    return next(error);
+  }
+};
+exports.getPerson = async (req, res, next) => {
   try {
     const { personId } = req.params;
     if (personId) {
       const person = persons.find((p) => p.id === personId);
       if (person) {
-        return res.status(200).json({
-          status: "success",
-          data: person,
-        });
+        return res.status(200).json(person);
       } else {
-        return next(new AppError("Person not found", 404));
+        return res.status(404).json({
+          status: "fail",
+          message: "Person not found",
+        });
       }
     }
-
-    return res.status(200).json({
-      status: "success",
-      data: persons,
-    });
   } catch (error) {
     console.error(error);
 
@@ -46,9 +56,8 @@ exports.addPerson = async (req, res, next) => {
     };
 
     persons.push(newPerson);
-    res.status(201).json({
-      status: "success",
-      data: newPerson,
+    res.status(200).json({
+      newPerson,
     });
   } catch (error) {
     return next(error);
