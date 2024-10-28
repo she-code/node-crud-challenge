@@ -41,6 +41,8 @@ app.use((req, res) => {
 });
 app.use(globalErrorHandler);
 if (require.main === module) {
-  app.listen(3000);
+  app.listen(3000, () => {
+    console.log("Server running in port 3000");
+  });
 }
 module.exports = app;
