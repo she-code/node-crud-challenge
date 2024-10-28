@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-require("dotenv").config();
 
 const globalErrorHandler = require("./controllers/errorController");
 let persons = [
@@ -25,6 +24,13 @@ global.db = persons;
 //TODO: Implement crud of person
 const personRoute = require("./routes/person");
 app.use("/person", personRoute);
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Welcome",
+  });
+});
 
 // Handle non-existing endpoints
 app.use((req, res) => {
